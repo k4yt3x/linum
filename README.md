@@ -19,7 +19,7 @@ usage: linum.sh
 ### Example
 
 ```shell
-curl -sSL https://github.com/k4yt3x/linum/blob/master/src/linum.sh | bash
+curl -sSL https://raw.githubusercontent.com/k4yt3x/linum/master/src/linum.sh | bash
 ```
 
 ## License

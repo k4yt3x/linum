@@ -133,7 +133,7 @@ sestatus
 
 print_subsection "Available Shells"
 cat /etc/shells
-exit
+
 ################################
 # networking
 print_section "Networking"

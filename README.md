@@ -24,7 +24,7 @@ curl -sSL https://raw.githubusercontent.com/k4yt3x/linum/master/src/linum.sh | b
 
 ## Screenshots
 
-![image](https://user-images.githubusercontent.com/21986859/93412431-ad033580-f88c-11ea-8639-e40b3d3c03d6.png)
+![image](https://user-images.githubusercontent.com/21986859/93413112-0d46a700-f88e-11ea-8c6f-48f2dbddf59d.png)
 
 ## License
 

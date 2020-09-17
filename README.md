@@ -22,6 +22,10 @@ usage: linum.sh
 curl -sSL https://raw.githubusercontent.com/k4yt3x/linum/master/src/linum.sh | bash
 ```
 
+## Screenshots
+
+![image](https://user-images.githubusercontent.com/21986859/93412431-ad033580-f88c-11ea-8639-e40b3d3c03d6.png)
+
 ## License
 
 Licensed under the GNU General Public License Version 3 (GNU GPL v3)

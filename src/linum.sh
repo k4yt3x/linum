@@ -289,8 +289,10 @@ else
     print_subsection "SCSI Devices"
     lsscsi
 
-    print_subsection "SMBIOS/DMI"
-    dmidecode
+    if [ "$VERBOSE" == true ]; then
+        print_subsection "SMBIOS/DMI"
+        dmidecode
+    fi
 fi
 
 if command -v nvidia-smi &>/dev/null; then

@@ -13,6 +13,9 @@
 # TODO
 # - date the os was first installed
 
+VERSION='1.0.0'
+
+
 # parse arguments and set flags
 while test $# -gt 0; do
     case "$1" in
@@ -47,6 +50,16 @@ if [ "$HELP" == true ]; then
     echo -e "    -v, --verbose\tinclude verbose information (extra iptables tables, full packages list)"
     exit 0
 fi
+
+# print banner
+echo '  _       ___   _   _   _   _   __  __'
+echo ' | |     |_ _| | \ | | | | | | |  \/  |'
+echo ' | |      | |  |  \| | | | | | | |\/| |'
+echo ' | |___   | |  | |\  | | |_| | | |  | |'
+echo ' |_____| |___| |_| \_|  \___/  |_|  |_|'
+echo ''
+echo "        Linux Enumeration Script"
+echo "                $VERSION"
 
 # include more paths
 export PATH=$PATH:/usr/sbin
@@ -120,7 +133,7 @@ sestatus
 
 print_subsection "Available Shells"
 cat /etc/shells
-
+exit
 ################################
 # networking
 print_section "Networking"

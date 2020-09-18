@@ -2,7 +2,7 @@
 # Name: Linum
 # Author: K4YT3X
 # Date Created: September 16, 2020
-# Last Modified: September 16, 2020
+# Last Modified: September 18, 2020
 #
 # Licensed under the GNU General Public License Version 3 (GNU GPL v3),
 #     available at: https://www.gnu.org/licenses/gpl-3.0.txt
@@ -10,10 +10,7 @@
 #
 # Description: Linum is a Linux enumeration script.
 
-# TODO
-# - date the os was first installed
-
-VERSION='1.0.0'
+VERSION='1.1.0'
 
 
 # parse arguments and set flags
@@ -118,6 +115,11 @@ echo "Processor: $(uname -p)"
 echo "Hardware platform: $(uname -i)"
 echo "Operating system: $(uname -o)"
 
+if [ -d "/var/log/installer" ] && command -v ip &>/dev/null ; then
+    print_subsection "System Installation Time"
+    stat /var/log/installer -c %y
+fi
+
 # disk/partition size, usage, and mount points
 print_subsection "File Systems Usages"
 df -h
@@ -198,6 +200,38 @@ echo "IDs: $(id)"
 print_subsection "Logged-On Users"
 who
 
+print_subsection "Recent Logins"
+last -n 20
+
+print_subsection "passwd File"
+cat /etc/passwd
+
+print_subsection "shadow File"
+cat /etc/shadow
+
+print_subsection "Groups"
+cat /etc/group
+
+if [ -f "/var/log/auth.log" ]; then
+    print_subsection "Recent Successful Logins"
+    cat /var/log/auth.log | egrep sshd | egrep "Accepted" | tail -20
+
+    if [ "$VERBOSE" == true ]; then
+        print_subsection "Recent Failed Logins"
+        cat /var/log/auth.log | egrep sshd | egrep "Failed" | tail -20
+    fi
+fi
+
+if [ -f "/var/log/secure" ]; then
+    print_subsection "Recent Successful Logins"
+    cat /var/log/secure | egrep sshd | egrep "Accepted" | tail -20
+
+    if [ "$VERBOSE" == true ]; then
+        print_subsection "Recent Failed Logins"
+        cat /var/log/secure | egrep sshd | egrep "Failed" | tail -20
+    fi
+fi
+
 ################################
 # files
 print_section "Interesting Files"
@@ -209,15 +243,6 @@ if [ -f "/etc/sudoers" ]; then
     print_subsection "sudoers File"
     cat /etc/sudoers | egrep -v "^\ *#|^$"
 fi
-
-print_subsection "passwd File"
-cat /etc/passwd
-
-print_subsection "shadow File"
-cat /etc/shadow
-
-print_subsection "Groups"
-cat /etc/group
 
 ################################
 # packages and modules
@@ -238,6 +263,11 @@ if command -v yum &>/dev/null; then
     echo "Number of packages available (yum): $(yum list all | tail -n +2 | wc -l)"
 fi
 
+if command -v dnf &>/dev/null; then
+    echo "Number of packages installed (dnf): $(dnf list installed | tail -n +2 | wc -l)"
+    echo "Number of packages available (dnf): $(dnf list available | tail -n +3 | wc -l)"
+fi
+
 # list of active repositories
 print_subsection "Active Repositories"
 if [ -d "/etc/apt" ]; then
@@ -249,6 +279,10 @@ if command -v yum &>/dev/null; then
     yum repolist
 fi
 
+if command -v dnf &>/dev/null; then
+    dnf repolist
+fi
+
 # name of software packages installed
 if [ "$VERBOSE" == true ]; then
     print_subsection "Installed Packages"
@@ -258,6 +292,10 @@ if [ "$VERBOSE" == true ]; then
 
     if command -v yum &>/dev/null; then
         yum list installed | tail -n +2
+    fi
+
+    if command -v dnf &>/dev/null; then
+        dnf list installed | tail -n +2
     fi
 fi
 

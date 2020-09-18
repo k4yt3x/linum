@@ -269,32 +269,36 @@ if command -v dnf &>/dev/null; then
 fi
 
 # list of active repositories
-print_subsection "Active Repositories"
 if [ -d "/etc/apt" ]; then
+    print_subsection "Active Repositories (apt)"
     cat /etc/apt/sources.list | egrep -v "^\ *#|^$"
     find /etc/apt/sources.list.d/ -iname "*.list" -exec cat {} + | egrep -v "^\ *#|^$"
 fi
 
 if command -v yum &>/dev/null; then
+    print_subsection "Active Repositories (yum)"
     yum repolist
 fi
 
 if command -v dnf &>/dev/null; then
+    print_subsection "Active Repositories (dnf)"
     dnf repolist
 fi
 
 # name of software packages installed
 if [ "$VERBOSE" == true ]; then
-    print_subsection "Installed Packages"
     if command -v dpkg &>/dev/null; then
+        print_subsection "Installed Packages (dpkg)"
         dpkg --list | tail -n +6 # | cut -d " " -f 3 | tr "\n" " "
     fi
 
     if command -v yum &>/dev/null; then
+        print_subsection "Installed Packages (yum)"
         yum list installed | tail -n +2
     fi
 
     if command -v dnf &>/dev/null; then
+        print_subsection "Installed Packages (dnf)"
         dnf list installed | tail -n +2
     fi
 fi

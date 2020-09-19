@@ -12,7 +12,6 @@
 
 VERSION='1.1.0'
 
-
 # parse arguments and set flags
 while test $# -gt 0; do
     case "$1" in
@@ -115,9 +114,14 @@ echo "Processor: $(uname -p)"
 echo "Hardware platform: $(uname -i)"
 echo "Operating system: $(uname -o)"
 
-if [ -d "/var/log/installer" ] && command -v ip &>/dev/null ; then
-    print_subsection "System Installation Time"
+# stat cannot display file birth time on ext4
+# therefore, %y (file last modified time) is used
+if [ -d "/var/log/installer" ] && command -v ip &>/dev/null; then
+    print_subsection "System Installation Time (/var/log/installer)"
     stat /var/log/installer -c %y
+elif [ -f "/root/install.log" ]; then
+    print_subsection "System Installation Time (/root/install.log)"
+    stat /root/install.log -c %y
 fi
 
 # disk/partition size, usage, and mount points
@@ -150,7 +154,7 @@ elif command -v ifconfig &>/dev/null; then
 fi
 
 print_subsection "DNS Servers"
-cat /etc/resolv.conf | egrep "^nameserver" | sed "s/^nameserver *//g" | tr "\n" " "
+cat /etc/resolv.conf | egrep "^nameserver" | sed "s/^nameserver *//g"
 
 print_subsection "Firewall Status"
 if command -v iptables &>/dev/null; then
@@ -356,6 +360,8 @@ fi
 
 ################################
 # services
+print_section "Services"
+
 print_subsection "Running Services"
 systemctl list-units --no-pager --type=service --state=running
 
@@ -364,4 +370,21 @@ if [ "$VERBOSE" == true ]; then
     print_subsection "Stopped Services"
     systemctl list-units --no-pager --type=service --state=inactive
     systemctl list-units --no-pager --type=service --state=failed
+fi
+
+################################
+# configurations
+print_section "Configurations"
+
+print_subsection "sysctl Configurations"
+sysctl_config=$(cat /etc/sysctl.conf | egrep -v "^\ *#|^$")
+if [ -z "$sysctl_config" ]; then
+    echo -e "(Empty)"
+else
+    echo "$sysctl_config"
+fi
+
+if [ -f "/etc/ssh/sshd_config" ]; then
+    print_subsection "SSH Server"
+    egrep -v "^\ *#|^$" /etc/ssh/sshd_config | egrep --color=always "^|^PermitRootLogin\ +yes|^PermitRootLogin\ +prohibit-password"
 fi

@@ -10,7 +10,7 @@
 #
 # Description: Linum is a Linux enumeration script.
 
-VERSION='1.1.0'
+VERSION='1.2.0'
 
 # parse arguments and set flags
 while test $# -gt 0; do
@@ -191,6 +191,14 @@ if command -v ss &>/dev/null; then
     ss -anltup
 elif command -v netstat &>/dev/null; then
     netstat -antup
+fi
+
+print_subsection "Routing Table"
+
+if command -v ip &>/dev/null; then
+    ip route
+elif command -v route &>/dev/null; then
+    route -n
 fi
 
 ################################
